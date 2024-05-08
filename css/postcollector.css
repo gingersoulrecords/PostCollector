@@ -1,0 +1,14 @@
+.pc-search {
+  position: relative;
+}
+
+.pc-results-container {
+  display: none;
+  position: absolute;
+  top: 100%;
+  min-width: 100%;
+  min-height: 3em;
+  /* background: white; */
+  left: 0;
+  z-index: 1;
+}
