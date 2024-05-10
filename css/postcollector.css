@@ -1,14 +1,26 @@
-.pc-search {
-  position: relative;
+popup panel toolbar {
+  display: flex;
+  align-items: start;
+  border-bottom: 1px solid var(--tw-prose-hr);
 }
 
 .pc-results-container {
   display: none;
-  position: absolute;
-  top: 100%;
-  min-width: 100%;
-  min-height: 3em;
-  /* background: white; */
-  left: 0;
-  z-index: 1;
+  margin: 1.5rem;
+}
+
+.pc-results-container a {
+  padding: 1rem;
+  background: var(--tw-prose-invert-quotes);
+  display: block;
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+.pc-results-container span.title {
+  font-weight: bold;
+}
+
+.pc-results-container span.content {
+  display: block;
 }

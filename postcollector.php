@@ -61,9 +61,9 @@ function postcollector_search_input($atts) {
     $results_container_html = '';
 
     // If the 'results' attribute is '.pc-results-container', generate a results container
-    if ($atts['results'] === '.pc-results-container') {
-        $results_container_html = '<div class="pc-results-container"></div>';
-    }
+    // if ($atts['results'] === '.pc-results-container') {
+    //     $results_container_html = '<div class="pc-results-container"></div>';
+    // }
 
     // Return HTML for the search input and, if applicable, the results container, wrapped in a div with the class 'pc-search'
     return '
