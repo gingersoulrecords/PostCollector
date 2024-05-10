@@ -24,6 +24,23 @@
         },
 
 
+        // performQuickScore: function (query, collectionName) {
+        //     var originalCollection = this.collections[collectionName];
+        //     var strippedCollection = originalCollection.map(function (item) {
+        //         return {
+        //             ...item,
+        //             content: item.content.replace(/<\/?[^>]+(>|$)/g, " ")
+        //         };
+        //     });
+
+        //     var qs = new quickScore.QuickScore(strippedCollection, ['title', 'content']);
+
+        //     var results = qs.search(query);
+        //     return results.filter(function (result) {
+        //         return (result.scoreKey === 'content' && result.score >= 0.025) || (result.scoreKey === 'title' && result.score >= 0.5);
+        //     });
+        // },
+
         performQuickScore: function (query, collectionName) {
             var originalCollection = this.collections[collectionName];
             var strippedCollection = originalCollection.map(function (item) {
@@ -36,51 +53,34 @@
             var qs = new quickScore.QuickScore(strippedCollection, ['title', 'content']);
 
             var results = qs.search(query);
+            results = results.map(function (result) {
+                // Check if the title or content contains the exact query string (case-insensitive)
+                if (result.item.title.toLowerCase().includes(query.toLowerCase()) || result.item.content.toLowerCase().includes(query.toLowerCase())) {
+                    // If it does, assign a very high score to promote it to the top of the list
+                    result.score = 1;
+                }
+                // Check if the title or content contains the capitalized version of the query string
+                var capitalizedQuery = query.charAt(0).toUpperCase() + query.slice(1);
+                if (result.item.title.includes(capitalizedQuery) || result.item.content.includes(capitalizedQuery)) {
+                    // If it does, assign a very high score to promote it to the top of the list
+                    result.score = 1;
+                }
+                return result;
+            });
             return results.filter(function (result) {
-                return (result.scoreKey === 'content' && result.score >= 0.2) || (result.scoreKey === 'title' && result.score >= 0.5);
+                return (result.scoreKey === 'content' && result.score >= 0.025) || (result.scoreKey === 'title' && result.score >= 0.5);
             });
         },
 
 
 
-        // parseResultsToHTML: function (results) {
-        //     return results.map(function (result) {
-        //         var title = result.item.title;
-        //         var content = result.item.content;
-        //         var scoreKey = result.scoreKey;
-        //         var matches = result.matches[scoreKey];
-        //         var matchedString;
-        //         var substrings = [];
-        //         var previousEnd = 0;
-        //         var wordsAround = 3;
-
-        //         matches.forEach(function (match) {
-        //             var start = match[0];
-        //             var end = match[1];
-        //             var beforeMatch = scoreKey === 'title' ? title : content.substring(previousEnd, start);
-        //             matchedString = scoreKey === 'title' ? title : content.substring(start, end);
-        //             var afterMatch = scoreKey === 'title' ? '' : content.substring(end, content.length);
-        //             var prefix = '', suffix = '';
-        //             if (scoreKey === 'content') {
-        //                 prefix = beforeMatch.split(' ').slice(-wordsAround).join(' ');
-        //                 suffix = afterMatch.split(' ').slice(0, wordsAround).join(' ');
-        //                 if (prefix.length > 0) prefix = '... ' + prefix;
-        //                 if (suffix.length > 0) suffix = suffix + ' ...';
-        //             }
-        //             substrings.push(prefix, '<mark>' + matchedString + '</mark>', suffix);
-        //             previousEnd = end;
-        //         });
-
-        //         if (scoreKey === 'title') {
-        //             title = '<mark>' + title + '</mark>';
-        //             substrings = [];
-        //         }
-
-        //         return '<li><a x-on:click.prevent="jQuery($el).trigger(\'click\');open=false" href="' + result.item.url + '"><span class="title">' + title + '</span>' + (substrings.length > 0 ? '<span class="content">' + substrings.join('') + '</span>' : '') + '</a></li>';
-        //     }).join('');
-        // },
 
         parseResultsToHTML: function (results) {
+            // Sort results by score in descending order
+            results.sort(function (a, b) {
+                return b.score - a.score;
+            });
+
             return results.map(function (result) {
                 var title = result.item.title;
                 var content = result.item.content;
