@@ -68,7 +68,7 @@
                 return result;
             });
             return results.filter(function (result) {
-                return (result.scoreKey === 'content' && result.score >= 0.025) || (result.scoreKey === 'title' && result.score >= 0.5);
+                return (result.scoreKey === 'content' && result.score >= 0.25) || (result.scoreKey === 'title' && result.score >= 0.5);
             });
         },
 
