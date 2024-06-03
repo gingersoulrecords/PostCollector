@@ -9,10 +9,25 @@ Author URI: https://davebloom.co
 License: GPL2
 */
 
+define('POSTCOLLECTOR_VERSION', '1.0');
+
+
+require_once plugin_dir_path(__FILE__) . 'postcollector_admin_settings.php';
+
+
 function postcollector_collect_post_data()
 {
+
+    $post_types = get_option('postcollector_post_types', array('post', 'page'));
+
+
+    // $args = array(
+    //     'post_type' => array('post', 'page'),
+    //     'posts_per_page' => -1,
+    // );
+
     $args = array(
-        'post_type' => array('post', 'page'),
+        'post_type' => $post_types,
         'posts_per_page' => -1,
     );
     $query = new WP_Query($args);
@@ -34,23 +49,24 @@ function postcollector_collect_post_data()
 function postcollector_enqueue_scripts()
 {
 
-        // Quickscore
-        wp_enqueue_script('quickscore_script', plugins_url('js/quick-score.min.js', __FILE__), array('jquery'), time(), true);
+    // Quickscore
+    wp_enqueue_script('quickscore_script', plugins_url('js/quick-score.min.js', __FILE__), array('jquery'), POSTCOLLECTOR_VERSION, true);
 
+    wp_enqueue_script('postcollector_script', plugins_url('js/postcollector.js', __FILE__), array('quickscore_script'), POSTCOLLECTOR_VERSION, true);
 
-    wp_enqueue_script('postcollector_script', plugins_url('js/postcollector.js', __FILE__), array('quickscore_script'), time(), true);
     $collection = postcollector_collect_post_data();
     wp_localize_script('postcollector_script', 'postCollector', array('collections' => array('postsAndPages' => $collection)));
 
 
     // Postcollector CSS
-    wp_enqueue_style('postcollector_style', plugins_url('css/postcollector.css', __FILE__), array(), '1.0');
+    wp_enqueue_style('postcollector_style', plugins_url('css/postcollector.css', __FILE__), array(), POSTCOLLECTOR_VERSION);
 }
 add_action('wp_enqueue_scripts', 'postcollector_enqueue_scripts');
 
 // Create a shortcode for the search input
 
-function postcollector_search_input($atts) {
+function postcollector_search_input($atts)
+{
     // Extract shortcode attributes
     $atts = shortcode_atts(array(
         'collections' => 'postsAndPages',

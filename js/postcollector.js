@@ -125,9 +125,14 @@
 
         bindKeyboardShortcut: function () {
             $(document).on('keydown', function (event) {
+
+
                 // Check if Cmd (on Mac) or Ctrl (on other platforms) and K keys are pressed
                 if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
                     event.preventDefault();
+
+
+
                     // Clear the search input and focus it
                     $('.pc-search-input').val('').focus();
                 }
